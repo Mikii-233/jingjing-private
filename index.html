@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#1f2140" />
+  <title>给晶晶的晚安小故事</title>
+
+  <style>
+    :root {
+      --bg-deep: #1f2140;
+      --bg-mid: #34365f;
+      --cream: #fff8ef;
+      --cream-soft: rgba(255, 248, 239, 0.86);
+      --pink: #f5b8c8;
+      --pink-deep: #e694aa;
+      --yellow: #f6d889;
+      --ink: #4c4765;
+      --white: #ffffff;
+      --shadow: 0 20px 60px rgba(12, 13, 35, 0.24);
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      background: var(--bg-deep);
+      font-family:
+        -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB",
+        "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+      color: var(--ink);
+      overscroll-behavior: none;
+    }
+
+    body {
+      min-height: 100svh;
+      overflow: hidden;
+    }
+
+    button, textarea {
+      font: inherit;
+    }
+
+    button {
+      border: 0;
+      cursor: pointer;
+    }
+
+    .app {
+      position: relative;
+      width: 100%;
+      min-height: 100svh;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 20% 10%, rgba(255,255,255,.13), transparent 22%),
+        radial-gradient(circle at 85% 18%, rgba(246,216,137,.12), transparent 18%),
+        linear-gradient(160deg, #1c1e39 0%, #30325a 52%, #51466a 100%);
+    }
+
+    /* 夜空 */
+    .sky {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .star {
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      background: rgba(255,255,255,.78);
+      border-radius: 50%;
+      animation: twinkle 3.6s ease-in-out infinite;
+    }
+
+    .star.big {
+      width: 5px;
+      height: 5px;
+      box-shadow: 0 0 12px rgba(255,255,255,.55);
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: .32; transform: scale(.8); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+
+    .moon {
+      position: absolute;
+      width: 92px;
+      height: 92px;
+      right: 9vw;
+      top: 7vh;
+      border-radius: 50%;
+      background: linear-gradient(145deg, #fff5c7, #f3d994);
+      box-shadow: 0 0 44px rgba(246,216,137,.24);
+      animation: floatMoon 6s ease-in-out infinite;
+    }
+
+    .moon::after {
+      content: "";
+      position: absolute;
+      width: 77px;
+      height: 77px;
+      border-radius: 50%;
+      left: -16px;
+      top: -12px;
+      background: #222443;
+    }
+
+    @keyframes floatMoon {
+      0%, 100% { transform: translateY(0) rotate(-2deg); }
+      50% { transform: translateY(7px) rotate(2deg); }
+    }
+
+    .cloud {
+      position: absolute;
+      height: 22px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.08);
+      filter: blur(.2px);
+      animation: drift 18s linear infinite;
+    }
+
+    .cloud::before,
+    .cloud::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      background: inherit;
+    }
+
+    .cloud::before {
+      width: 34px;
+      height: 34px;
+      left: 15px;
+      top: -13px;
+    }
+
+    .cloud::after {
+      width: 46px;
+      height: 46px;
+      right: 18px;
+      top: -20px;
+    }
+
+    .cloud.one {
+      width: 110px;
+      left: -20px;
+      top: 23%;
+      animation-duration: 22s;
+    }
+
+    .cloud.two {
+      width: 88px;
+      right: -15px;
+      top: 62%;
+      animation-duration: 29s;
+      animation-direction: reverse;
+    }
+
+    @keyframes drift {
+      0% { transform: translateX(-18px); }
+      50% { transform: translateX(28px); }
+      100% { transform: translateX(-18px); }
+    }
+
+    .pages {
+      position: relative;
+      z-index: 5;
+      width: 100%;
+      height: 100svh;
+    }
+
+    .page {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding:
+        calc(26px + env(safe-area-inset-top))
+        18px
+        calc(24px + env(safe-area-inset-bottom));
+      opacity: 0;
+      transform: translateX(28px) scale(.985);
+      pointer-events: none;
+      transition:
+        opacity .45s ease,
+        transform .45s cubic-bezier(.2,.8,.2,1);
+    }
+
+    .page.active {
+      opacity: 1;
+      transform: translateX(0) scale(1);
+      pointer-events: auto;
+    }
+
+    .page.leaving-left {
+      opacity: 0;
+      transform: translateX(-28px) scale(.985);
+    }
+
+    .card {
+      width: min(100%, 430px);
+      max-height: calc(100svh - 52px);
+      overflow: auto;
+      scrollbar-width: none;
+      background:
+        linear-gradient(180deg, rgba(255,253,248,.97), rgba(255,246,239,.94));
+      border: 1px solid rgba(255,255,255,.56);
+      border-radius: 30px;
+      padding: 28px 23px 24px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+
+    .card::-webkit-scrollbar {
+      display: none;
+    }
+
+    .intro-card {
+      text-align: center;
+      padding-top: 38px;
+      padding-bottom: 34px;
+    }
+
+    .tiny {
+      font-size: 13px;
+      letter-spacing: .12em;
+      color: #8d88a1;
+      margin-bottom: 14px;
+    }
+
+    .bear {
+      width: 94px;
+      height: 94px;
+      margin: 2px auto 20px;
+      position: relative;
+      border-radius: 47% 47% 44% 44%;
+      background: #d9aa82;
+      box-shadow: inset 0 -6px 0 rgba(126,77,52,.08);
+    }
+
+    .bear::before,
+    .bear::after {
+      content: "";
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      top: -8px;
+      border-radius: 50%;
+      background: #c9936d;
+      z-index: -1;
+    }
+
+    .bear::before { left: 3px; }
+    .bear::after { right: 3px; }
+
+    .bear-face {
+      position: absolute;
+      inset: 0;
+    }
+
+    .bear-face::before,
+    .bear-face::after {
+      content: "";
+      position: absolute;
+      width: 6px;
+      height: 8px;
+      top: 39px;
+      border-radius: 50%;
+      background: #54413d;
+    }
+
+    .bear-face::before { left: 28px; }
+    .bear-face::after { right: 28px; }
+
+    .nose {
+      position: absolute;
+      width: 10px;
+      height: 7px;
+      border-radius: 50%;
+      background: #6f5146;
+      left: 42px;
+      top: 50px;
+    }
+
+    h1, h2, p {
+      margin-top: 0;
+    }
+
+    h1 {
+      font-size: clamp(27px, 8vw, 34px);
+      line-height: 1.28;
+      margin-bottom: 13px;
+      color: #45405e;
+      letter-spacing: -.02em;
+    }
+
+    .intro-text {
+      font-size: 16px;
+      line-height: 1.8;
+      color: #77718d;
+      margin: 0 auto 26px;
+      max-width: 300px;
+    }
+
+    .primary {
+      width: 100%;
+      min-height: 52px;
+      border-radius: 18px;
+      color: #fff;
+      background: linear-gradient(135deg, var(--pink-deep), #d790b5);
+      box-shadow: 0 10px 24px rgba(225, 134, 169, .28);
+      font-weight: 700;
+      font-size: 16px;
+      transition: transform .15s ease, box-shadow .15s ease;
+    }
+
+    .primary:active {
+      transform: translateY(1px) scale(.99);
+      box-shadow: 0 6px 16px rgba(225, 134, 169, .22);
+    }
+
+    .soft-note {
+      margin: 16px 0 0;
+      color: #aaa5b8;
+      font-size: 12px;
+    }
+
+    .story-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .story-no {
+      color: #a8a2b6;
+      font-size: 12px;
+      letter-spacing: .12em;
+    }
+
+    .mini-moon {
+      width: 31px;
+      height: 31px;
+      border-radius: 50%;
+      background: #f6da91;
+      position: relative;
+      flex: 0 0 auto;
+    }
+
+    .mini-moon::after {
+      content: "";
+      position: absolute;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      left: -7px;
+      top: -5px;
+      background: #fff8ef;
+    }
+
+    h2 {
+      font-size: 25px;
+      line-height: 1.34;
+      color: #49435f;
+      margin-bottom: 17px;
+    }
+
+    .story {
+      font-size: 15.8px;
+      line-height: 2;
+      color: #68627b;
+      letter-spacing: .01em;
+    }
+
+    .story p {
+      margin-bottom: 13px;
+    }
+
+    .story p:last-child {
+      margin-bottom: 0;
+    }
+
+    .story-ending {
+      margin-top: 18px;
+      padding: 14px 15px;
+      border-radius: 18px;
+      background: rgba(245,184,200,.16);
+      color: #8a6073;
+      line-height: 1.75;
+      font-size: 14px;
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: 1fr 1.45fr;
+      gap: 10px;
+      margin-top: 23px;
+    }
+
+    .secondary,
+    .next {
+      min-height: 48px;
+      border-radius: 16px;
+      font-weight: 700;
+    }
+
+    .secondary {
+      background: #f1edf0;
+      color: #7c758a;
+    }
+
+    .next {
+      background: #e9a5b7;
+      color: #fff;
+      box-shadow: 0 8px 20px rgba(217,144,167,.22);
+    }
+
+    .progress {
+      position: fixed;
+      z-index: 8;
+      left: 50%;
+      bottom: calc(11px + env(safe-area-inset-bottom));
+      transform: translateX(-50%);
+      display: flex;
+      gap: 7px;
+      padding: 7px 11px;
+      border-radius: 99px;
+      background: rgba(16, 17, 38, .18);
+      backdrop-filter: blur(8px);
+    }
+
+    .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.34);
+      transition: width .25s ease, background .25s ease;
+    }
+
+    .dot.active {
+      width: 21px;
+      border-radius: 99px;
+      background: rgba(255,255,255,.86);
+    }
+
+    .feedback-title {
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    .feedback-sub {
+      text-align: center;
+      color: #8c879b;
+      line-height: 1.7;
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+
+    .moods {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 9px;
+      margin-bottom: 18px;
+    }
+
+    .mood {
+      border-radius: 16px;
+      min-height: 45px;
+      padding: 8px 10px;
+      background: #f1edf1;
+      color: #756d82;
+      border: 1px solid transparent;
+      transition: .2s ease;
+    }
+
+    .mood.selected {
+      background: rgba(245,184,200,.23);
+      border-color: rgba(220,139,164,.45);
+      color: #925f72;
+    }
+
+    .label {
+      display: block;
+      margin: 4px 0 8px;
+      font-size: 13px;
+      color: #8e889c;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 112px;
+      resize: none;
+      border: 0;
+      outline: none;
+      background: #f2eef0;
+      border-radius: 18px;
+      padding: 14px 15px;
+      color: #595267;
+      line-height: 1.65;
+    }
+
+    textarea::placeholder {
+      color: #aca6b2;
+    }
+
+    .submit-row {
+      margin-top: 12px;
+    }
+
+    .status {
+      min-height: 22px;
+      margin: 12px 4px 0;
+      text-align: center;
+      font-size: 12.5px;
+      color: #9b7382;
+      line-height: 1.6;
+    }
+
+    .again {
+      display: block;
+      width: 100%;
+      margin-top: 8px;
+      background: transparent;
+      color: #aaa4b2;
+      font-size: 13px;
+      padding: 8px;
+    }
+
+    .swipe-tip {
+      text-align: center;
+      color: rgba(255,255,255,.58);
+      font-size: 11px;
+      position: fixed;
+      z-index: 8;
+      top: calc(10px + env(safe-area-inset-top));
+      left: 50%;
+      transform: translateX(-50%);
+      white-space: nowrap;
+      pointer-events: none;
+    }
+
+    @media (min-width: 700px) {
+      .card {
+        padding-left: 30px;
+        padding-right: 30px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: .001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .001ms !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="app" id="app">
+    <div class="sky" aria-hidden="true">
+      <div class="moon"></div>
+      <div class="cloud one"></div>
+      <div class="cloud two"></div>
+
+      <span class="star big" style="left:10%;top:12%;animation-delay:.2s"></span>
+      <span class="star" style="left:19%;top:31%;animation-delay:1.2s"></span>
+      <span class="star" style="left:29%;top:15%;animation-delay:2.1s"></span>
+      <span class="star big" style="left:39%;top:9%;animation-delay:.9s"></span>
+      <span class="star" style="left:48%;top:28%;animation-delay:1.6s"></span>
+      <span class="star" style="left:57%;top:16%;animation-delay:2.8s"></span>
+      <span class="star big" style="left:72%;top:34%;animation-delay:1.1s"></span>
+      <span class="star" style="left:86%;top:43%;animation-delay:.5s"></span>
+      <span class="star" style="left:14%;top:72%;animation-delay:2.4s"></span>
+      <span class="star big" style="left:28%;top:82%;animation-delay:1.4s"></span>
+      <span class="star" style="left:47%;top:73%;animation-delay:.7s"></span>
+      <span class="star" style="left:64%;top:86%;animation-delay:2s"></span>
+      <span class="star big" style="left:82%;top:75%;animation-delay:1.8s"></span>
+      <span class="star" style="left:92%;top:90%;animation-delay:2.9s"></span>
+    </div>
+
+    <div class="swipe-tip" id="swipeTip">可以左右轻轻滑动 ✦</div>
+
+    <section class="pages" id="pages">
+
+      <!-- 开场 -->
+      <article class="page active" data-page="0">
+        <div class="card intro-card">
+          <div class="tiny">GOOD NIGHT · 晚安</div>
+
+          <div class="bear" aria-hidden="true">
+            <div class="bear-face"></div>
+            <div class="nose"></div>
+          </div>
+
+          <h1>晶晶，睡不着吗？<br>来看小故事吧。</h1>
+
+          <p class="intro-text">
+            今晚不讲大道理。<br>
+            只讲四个很短、很软的小故事。<br>
+            看到有点困，就把手机放下。
+          </p>
+
+          <button class="primary" type="button" onclick="goTo(1)">
+            听第一个故事
+          </button>
+
+          <p class="soft-note">希望你读到最后的时候，刚好有一点点困。</p>
+        </div>
+      </article>
+
+      <!-- 故事 1 -->
+      <article class="page" data-page="1">
+        <div class="card">
+          <div class="story-head">
+            <span class="story-no">STORY 01 / 04</span>
+            <span class="mini-moon" aria-hidden="true"></span>
+          </div>
+
+          <h2>月亮便利店</h2>
+
+          <div class="story">
+            <p>
+              昨晚我路过一家只在十二点以后营业的小店。门口没有招牌，
+              玻璃上只贴着一句话：<b>“这里卖给睡不着的人一点点安心。”</b>
+            </p>
+
+            <p>
+              我进去问老板，有没有适合晶晶的。老板从最高的架子上拿下一只小纸袋，
+              里面装着一片月光、一阵很轻的风，还有一句没写完的话。
+            </p>
+
+            <p>
+              我问，为什么话没写完？老板说：“剩下的要你自己写。”
+              于是我拿起笔，在后面补了一句：
+              <b>“今天已经够辛苦了，明天再慢慢来。”</b>
+            </p>
+
+            <p>
+              回来的路上，那只纸袋一直暖暖的。
+              我想，大概是因为它知道自己今晚要送给谁。
+            </p>
+          </div>
+
+          <div class="story-ending">
+            所以如果现在还没睡着，就先替我收好这袋月光。别急着睡，先安心就好。
+          </div>
+
+          <div class="controls">
+            <button class="secondary" type="button" onclick="goTo(0)">上一页</button>
+            <button class="next" type="button" onclick="goTo(2)">下一个故事</button>
+          </div>
+        </div>
+      </article>
+
+      <!-- 故事 2 -->
+      <article class="page" data-page="2">
+        <div class="card">
+          <div class="story-head">
+            <span class="story-no">STORY 02 / 04</span>
+            <span class="mini-moon" aria-hidden="true"></span>
+          </div>
+
+          <h2>晚风替我跑了一趟</h2>
+
+          <div class="story">
+            <p>
+              有一天晚上，我忽然很想跟晶晶说点什么，
+              可是看了看时间，又觉得太晚了。
+            </p>
+
+            <p>
+              于是我把窗户开了一条缝，对晚风说：
+              “你要是路过她那里，就替我看看她有没有好好盖被子。”
+              晚风晃了晃窗帘，好像真的听懂了。
+            </p>
+
+            <p>
+              过了一会儿，它又从窗缝里溜回来，带着一点凉凉的夜色。
+              我问它：“见到了吗？”
+            </p>
+
+            <p>
+              它当然没有回答，只把桌上的便签吹翻了一页。
+              那一页正好写着：
+              <b>“有人惦记的时候，夜晚就不会那么长。”</b>
+            </p>
+          </div>
+
+          <div class="story-ending">
+            我就当它已经替我跑完这一趟了。今晚的晚安，也顺便一起送到了。
+          </div>
+
+          <div class="controls">
+            <button class="secondary" type="button" onclick="goTo(1)">上一个</button>
+            <button class="next" type="button" onclick="goTo(3)">继续听</button>
+          </div>
+        </div>
+      </article>
+
+      <!-- 故事 3 -->
+      <article class="page" data-page="3">
+        <div class="card">
+          <div class="story-head">
+            <span class="story-no">STORY 03 / 04</span>
+            <span class="mini-moon" aria-hidden="true"></span>
+          </div>
+
+          <h2>口袋里的一盏小灯</h2>
+
+          <div class="story">
+            <p>
+              我以前总觉得，人一定要很厉害，才能照亮别人。
+              后来才发现不是。
+            </p>
+
+            <p>
+              有时候只是记得一句随口说过的话，
+              在对方累的时候问一句“今天还好吗”，
+              或者在一个普通得不能再普通的晚上，说声“早点睡”。
+            </p>
+
+            <p>
+              这些事情都很小，小得像一盏可以放进口袋里的灯。
+              它照不了多远，却刚好能照到脚边的路。
+            </p>
+
+            <p>
+              所以我偷偷给晶晶留了一盏。
+              哪天觉得世界有点吵，就把它拿出来。
+              不需要赶路，只要知道前面还有一点亮，就够了。
+            </p>
+          </div>
+
+          <div class="story-ending">
+            这盏灯不收电费。唯一的使用说明是：不开心的时候，也可以慢一点。
+          </div>
+
+          <div class="controls">
+            <button class="secondary" type="button" onclick="goTo(2)">上一个</button>
+            <button class="next" type="button" onclick="goTo(4)">最后一个</button>
+          </div>
+        </div>
+      </article>
+
+      <!-- 故事 4 -->
+      <article class="page" data-page="4">
+        <div class="card">
+          <div class="story-head">
+            <span class="story-no">STORY 04 / 04</span>
+            <span class="mini-moon" aria-hidden="true"></span>
+          </div>
+
+          <h2>那颗迟到的星星</h2>
+
+          <div class="story">
+            <p>
+              今晚我抬头的时候，发现有一颗星星很晚才亮。
+              我问它：“你怎么迟到了？”
+            </p>
+
+            <p>
+              它说，它白天绕了很远的路，
+              去替一个人收集今天所有没来得及开心的小瞬间：
+              一口好吃的东西、一次顺利赶上的车、
+              一句被认真听见的话，还有某个突然想起的人。
+            </p>
+
+            <p>
+              我说：“那你收集这些做什么？”
+              它晃了晃，说要等夜深了，再把它们一颗一颗放回去。
+            </p>
+
+            <p>
+              我想了想，就托它多带一件东西给晶晶。
+              不是什么大事，只是一句：
+              <b>“今天没发生的好事，可以留到明天。”</b>
+            </p>
+          </div>
+
+          <div class="story-ending">
+            所以故事讲完啦。现在轮到星星值夜班，你可以不用值班了。
+          </div>
+
+          <div class="controls">
+            <button class="secondary" type="button" onclick="goTo(3)">上一个</button>
+            <button class="next" type="button" onclick="goTo(5)">看完啦</button>
+          </div>
+        </div>
+      </article>
+
+      <!-- 反馈 -->
+      <article class="page" data-page="5">
+        <div class="card">
+          <div class="tiny" style="text-align:center;">A LITTLE MESSAGE</div>
+          <h2 class="feedback-title">晶晶，晚安啦。</h2>
+
+          <p class="feedback-sub">
+            最后留一句悄悄话吧。<br>
+            发出去以后，对面的人可以收到。
+          </p>
+
+          <form id="feedbackForm">
+            <div class="moods" aria-label="现在的感觉">
+              <button type="button" class="mood" data-value="有点困了">🌙 有点困了</button>
+              <button type="button" class="mood" data-value="还想再听">✨ 还想再听</button>
+              <button type="button" class="mood" data-value="今天还不错">☁️ 今天还不错</button>
+              <button type="button" class="mood" data-value="需要一个抱抱">🧸 需要一个抱抱</button>
+            </div>
+
+            <input type="hidden" id="moodInput" name="mood" value="" />
+            <input type="hidden" id="timeInput" name="time" value="" />
+
+            <label class="label" for="message">
+              想说什么都可以：
+            </label>
+
+            <textarea
+              id="message"
+              name="message"
+              maxlength="500"
+              placeholder="比如：最喜欢第几个故事、今天发生了什么，或者只写一句晚安……"
+            ></textarea>
+
+            <div class="submit-row">
+              <button class="primary" id="submitBtn" type="submit">
+                把悄悄话送出去
+              </button>
+            </div>
+
+            <div class="status" id="status"></div>
+          </form>
+
+          <button class="again" type="button" onclick="goTo(0)">
+            再从开头看一遍
+          </button>
+        </div>
+      </article>
+    </section>
+
+    <div class="progress" id="progress" aria-label="页面进度"></div>
+  </main>
+
+  <script>
+    /*
+      ==========================================================
+      反馈功能设置（只需要改这里）
+      ==========================================================
+
+      1. 打开 https://formspree.io/
+      2. 注册后 New Form
+      3. 复制你的 endpoint，例如：
+         https://formspree.io/f/abcdwxyz
+      4. 把下面这行里的 XXXXXXXX 替换成你的 ID
+      5. 保存 index.html，再上传 GitHub
+
+      配好以后：
+      - 晶晶提交的 mood + message + time 会进入 Formspree 后台
+      - 也可以在 Formspree 中开启邮件通知
+    */
+    const FORM_ENDPOINT = "https://formspree.io/f/XXXXXXXX";
+
+    const pages = [...document.querySelectorAll(".page")];
+    const progress = document.getElementById("progress");
+    const swipeTip = document.getElementById("swipeTip");
+    const feedbackForm = document.getElementById("feedbackForm");
+    const statusEl = document.getElementById("status");
+    const submitBtn = document.getElementById("submitBtn");
+    const moodInput = document.getElementById("moodInput");
+    const timeInput = document.getElementById("timeInput");
+    const moodButtons = [...document.querySelectorAll(".mood")];
+
+    let current = 0;
+    let touchStartX = 0;
+    let touchStartY = 0;
+
+    function renderProgress() {
+      progress.innerHTML = "";
+      pages.forEach((_, i) => {
+        const dot = document.createElement("span");
+        dot.className = "dot" + (i === current ? " active" : "");
+        progress.appendChild(dot);
+      });
+    }
+
+    function goTo(index) {
+      if (index < 0 || index >= pages.length || index === current) return;
+
+      const old = current;
+      pages[old].classList.remove("active");
+      if (index > old) pages[old].classList.add("leaving-left");
+
+      setTimeout(() => {
+        pages[old].classList.remove("leaving-left");
+      }, 500);
+
+      current = index;
+      pages[current].classList.add("active");
+
+      const card = pages[current].querySelector(".card");
+      if (card) card.scrollTop = 0;
+
+      renderProgress();
+      localStorage.setItem("jingjing_last_page", String(current));
+
+      swipeTip.style.opacity = current === 0 ? ".58" : ".42";
+    }
+
+    window.goTo = goTo;
+
+    // 左右滑动
+    document.addEventListener("touchstart", (e) => {
+      if (!e.touches || e.touches.length !== 1) return;
+      touchStartX = e.touches[0].clientX;
+      touchStartY = e.touches[0].clientY;
+    }, { passive: true });
+
+    document.addEventListener("touchend", (e) => {
+      if (!e.changedTouches || e.changedTouches.length !== 1) return;
+
+      const dx = e.changedTouches[0].clientX - touchStartX;
+      const dy = e.changedTouches[0].clientY - touchStartY;
+
+      // 纵向滚动优先，防止读故事时误翻页
+      if (Math.abs(dy) > Math.abs(dx)) return;
+      if (Math.abs(dx) < 52) return;
+
+      if (dx < 0) goTo(Math.min(current + 1, pages.length - 1));
+      else goTo(Math.max(current - 1, 0));
+    }, { passive: true });
+
+    // 键盘方向键（电脑预览时也方便）
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowRight") goTo(Math.min(current + 1, pages.length - 1));
+      if (e.key === "ArrowLeft") goTo(Math.max(current - 1, 0));
+    });
+
+    // 心情选择
+    moodButtons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        moodButtons.forEach(b => b.classList.remove("selected"));
+        btn.classList.add("selected");
+        moodInput.value = btn.dataset.value;
+      });
+    });
+
+    // 反馈提交
+    feedbackForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const message = document.getElementById("message").value.trim();
+      const mood = moodInput.value.trim();
+
+      if (!message && !mood) {
+        statusEl.textContent = "至少留下一点点内容再发送吧。";
+        return;
+      }
+
+      timeInput.value = new Date().toLocaleString("zh-CN", {
+        hour12: false
+      });
+
+      // endpoint 还没设置时：先做本地演示保存
+      if (FORM_ENDPOINT.includes("XXXXXXXX")) {
+        const demoData = {
+          mood,
+          message,
+          time: timeInput.value
+        };
+        localStorage.setItem("jingjing_demo_feedback", JSON.stringify(demoData));
+
+        statusEl.textContent =
+          "演示模式：这句话已经保存在这台手机里。把 HTML 顶部的 Formspree ID 换掉后，你就能在后台收到它。";
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = "正在送过去…";
+      statusEl.textContent = "";
+
+      try {
+        const formData = new FormData(feedbackForm);
+
+        const response = await fetch(FORM_ENDPOINT, {
+          method: "POST",
+          body: formData,
+          headers: {
+            "Accept": "application/json"
+          }
+        });
+
+        if (response.ok) {
+          statusEl.textContent = "收到啦。今晚的悄悄话已经送到 ✦";
+          feedbackForm.reset();
+          moodButtons.forEach(b => b.classList.remove("selected"));
+          moodInput.value = "";
+        } else {
+          statusEl.textContent = "好像没有送成功，再点一次试试。";
+        }
+      } catch (err) {
+        statusEl.textContent = "网络开了个小差，等网络正常后再发送就好。";
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = "把悄悄话送出去";
+      }
+    });
+
+    // 默认始终从开场进入；如果想继续上次位置，可改为读取 localStorage
+    renderProgress();
+  </script>
+</body>
+</html>
